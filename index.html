@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Engine</title>
+    </head>
+    <script src="pixi.min.js"></script>
+    
+    <script src="Engine/Wrappers.js"></script>
+    <script src="Engine/Setup.js"></script>
+    <script src="Engine/Animation.js"></script>
+    <script src="Engine/Entity.js"></script>
+    <script src="Engine/Input.js"></script>
+    <script src="Engine/Math.js"></script>
+    <script src="Engine/Physics.js"></script>
+    <script src="Engine/Text.js"></script>
+    
+    <body oncontextmenu="return false;">
+        <script type="text/javascript">            
+            let app = new PIXI.Application({width: screen.w, height: screen.h});
+            document.body.appendChild(app.view);  
+            app.stage.sortableChildren = true;
+            PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+            
+            const drawing = new PIXI.Graphics();
+            
+            const entities = [];
+            
+            const keyboard = [];
+            const usedKeys = []; 
+            
+            const mouse =
+            {
+                left: new Key(),
+                right: new Key()
+            };
+
+            document.addEventListener("keydown", () => { RegisterKeyEvent(event.key, true) } ); 
+            document.addEventListener("keyup", () => { RegisterKeyEvent(event.key, false)} );
+            document.addEventListener("mousedown", () => { RegisterMouseEvent(event.button, true)} );
+            document.addEventListener("mouseup", () => { RegisterMouseEvent(event.button, false)} );
+        </script>
+        <script src="ninja.js"></script>
+        <script type="text/javascript">
+            Start();
+            setInterval(GameLoop, 20);
+        </script>
+    </body>
+</html>
