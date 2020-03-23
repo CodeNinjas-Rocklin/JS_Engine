@@ -1,7 +1,7 @@
 /* eslint-env es6 */
 /*eslint-disable*/
 
-let screen = CreateScreen(800, 450);
+let screen = CreateScreen(1400, 700);
 
 function GameLoop()
 {

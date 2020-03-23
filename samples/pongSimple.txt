@@ -1,0 +1,43 @@
+/* eslint-env es6 */
+/*eslint-disable*/
+
+//Global variables
+let playerA = new Entity("whiteSquare", 100, screen.y, 50, 200);
+let playerB = new Entity("whiteSquare", screen.w - 100, screen.y, 50, 200);
+let ball = new Entity("ball", screen.x, screen.y, 50, 50);
+
+//Runs once
+function Start()
+{
+    SetBackgroundColor("0xe374b4");
+    ball.velocity.Set(Math.random() - .5, Math.random() - .5);
+    ball.velocity.magnitude = 5;
+}
+
+//Runs 50 times per second
+function Update()
+{   
+    if(IsKeyDown('w')) { playerA.position.y -= 15; }
+    if(IsKeyDown('s')) { playerA.position.y += 15; }
+    playerA.position.y = Restrain(playerA.position.y, 0, screen.h);
+    
+    playerB.position.y = Restrain(GetMousePosition().y, 0, screen.h);
+    
+    if(PredictiveCollision(ball, playerA))
+    {
+        if(GetSide(ball, playerA) % 2 == 0) { ball.velocity.y *= -1; }
+        else { ball.velocity.x *= -1; }
+    } 
+    else if(PredictiveCollision(ball, playerB))
+    {
+        if(GetSide(ball, playerB) % 2 == 0) { ball.velocity.y *= -1; }
+        else { ball.velocity.x *= -1; }
+    }
+    
+    let bounce = IsContained(ball, screen);
+    if(bounce > 0)
+    {
+        if(bounce % 2 == 0) { ball.velocity.y *= -1; }
+        else { ball.velocity.x *= -1; }
+    }
+}

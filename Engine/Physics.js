@@ -9,6 +9,15 @@ function IsTouching(a, b)
            a.y + a.h/2 > b.y - b.h/2;
 }
 
+function IsContained(a, b)
+{
+    if(!(a.x + a.w/2 < b.x + b.w/2)) { return 1; }
+    if(!(a.x - a.w/2 > b.x - b.w/2)) { return 3; }
+    if(!(a.y + a.h/2 < b.y + b.h/2)) { return 2; }
+    if(!(a.y - a.h/2 > b.y - b.h/2)) { return 4; }
+    return 0;
+}
+
 function IsTouchingPoint(a, b)
 {
     return a.x - a.w/2 < b.x &&
@@ -27,7 +36,7 @@ function PredictiveCollision(a, b)
 
 function GetSide(a, b)
 {
-    if(a.x - a.w/2 < b.x + b.w/2 && a.x + a.w/2 > b.x - b.w/2) { if(a.y <= b.y){ return 1; } else { return 2; } }
-    if(a.y - a.h/2 < b.y + b.h/2 && a.y + a.h/2 > b.y - b.h/2) { if(a.x <= b.x){ return 3; } else { return 4; } }
+    if(a.x - a.w/2 < b.x + b.w/2 && a.x + a.w/2 > b.x - b.w/2) { if(a.y <= b.y){ return 2; } else { return 4; } }
+    if(a.y - a.h/2 < b.y + b.h/2 && a.y + a.h/2 > b.y - b.h/2) { if(a.x <= b.x){ return 1; } else { return 3; } }
     return 0;
 }
