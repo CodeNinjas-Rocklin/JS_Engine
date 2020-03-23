@@ -23,6 +23,7 @@ class Text
     set x(x) { this._obj.x = x; }
     get y() { return this._obj.y; }
     set y(y) { this._obj.y = y; }
+    set z(z) { this._obj.zIndex = z; }
     
     get text() { return this._obj.text; }
     set text(t) { this._obj.text = t; }
@@ -37,7 +38,7 @@ class Text
     }
     set outlineColor(c) { this._obj.style.stroke = c; }
     set outlineWidth(w) { this._obj.style.strokeThickness = w; }
-    set renderOrder(z) { this._obj.zIndex = z; }
+    
 }
 
 function CreateGenericFancyText(m, x, y)

@@ -1,0 +1,128 @@
+/* eslint-env es6 */
+/*eslint-disable*/
+
+//Global variables
+let playerA = new Entity("whiteSquare", 100, screen.y, 50, 200);
+let playerB = new Entity("whiteSquare", screen.w - 100, screen.y, 50, 200);
+let ball = new Entity("ball", screen.x, screen.y, 50, 50);
+let vecZero = new Vector2(0,0);
+
+let scoreA = 0;
+let scoreB = 0;
+let score = CreateGenericFancyText("0 | 0", screen.x, 50);
+score.SetAnchor(.5);
+score.bold = false;
+score.size = 100;
+score.color = "0x70ffde";
+score.outlineWidth = 0;
+score.z = 0;
+
+let reset = false;
+let dir = 0;
+
+let stage = GetStage();
+
+//Runs once
+function Start()
+{
+    SetBackgroundColor("0xe374b4");
+    ball.velocity.Set(Math.random() - .5, 0);
+    ball.velocity.magnitude = 10;
+    
+    playerA.z = 1;
+    playerB.z = 1;
+    ball.z = 1;
+    playerA.AddChild(new Entity("shadowSquare", playerA.x, playerA.y, 50, 200));
+    playerB.AddChild(new Entity("shadowSquare", playerB.x, playerB.y, 50, 200));
+    ball.AddChild(new Entity("shadowBall", ball.x, ball.y, 50, 50));
+    playerA.GetLastChild().offset.Set(-10, 20);
+    playerB.GetLastChild().offset.Set(-10, 20);
+    ball.GetLastChild().offset.Set(-10, 20);
+    
+    playerA.newPos = playerA.y;
+}
+
+//Runs 50 times per second
+function Update()
+{   
+    if(IsKeyDown('w')) { playerA.newPos -= 30; }
+    if(IsKeyDown('s')) { playerA.newPos += 30; }
+    playerA.newPos = Restrain(playerA.newPos, 0, screen.h);
+    playerA.position.y = Lerp(playerA.position.y, playerA.newPos, .3);
+    playerA.offset = VectorLerp(playerA.offset, vecZero, .2);
+    playerA.GetLastChild().offset.Set(-10 + playerA.offset.x, 20 + playerA.offset.y);
+    playerA.w = Lerp(playerA.w, 50, .2);
+
+    playerB.position.y = Lerp(playerB.position.y, Restrain(GetMousePosition().y, 0, screen.h), .3);
+    playerB.offset = VectorLerp(playerB.offset, vecZero, .2);
+    playerB.GetLastChild().offset.Set(-10 + playerB.offset.x, 20 + playerB.offset.y);
+    playerB.w = Lerp(playerB.w, 50, .2);
+    
+    ball.ChangeSize(Lerp(ball.w, 50, .2));
+    
+    stage.x *= -.6;
+    stage.y *= -.6;
+    
+    if(PredictiveCollision(ball, playerA) && ball.velocity.x < 0)
+    {
+        stage.x += ball.velocity.x / 2;
+        stage.y += ball.velocity.y / 2;
+        if(GetSide(ball, playerA) % 2 == 1) { ball.velocity.x *= -1; }
+        ball.velocity.Subtract(new Vector2((playerA.x - ball.x)/50, (playerA.y - ball.y)/50));
+        ball.ChangeSize(100 + ball.velocity.magnitude);
+        playerA.w += ball.velocity.magnitude * 2;
+        playerA.offset.Set(-ball.velocity.x * 3, ball.velocity.y * 3);
+    } 
+    else if(PredictiveCollision(ball, playerB) && ball.velocity.x > 0)
+    {
+        stage.x += ball.velocity.x / 2;
+        stage.y += ball.velocity.y / 2;
+        if(GetSide(ball, playerB) % 2 == 1) { ball.velocity.x *= -1; }
+        ball.velocity.Subtract(new Vector2((playerB.x - ball.x)/50, (playerB.y - ball.y)/50));
+        ball.ChangeSize(100 + ball.velocity.magnitude);
+        playerB.w += ball.velocity.magnitude * 2;
+        playerB.offset.Set(-ball.velocity.x * 3, ball.velocity.y * 3);
+    }
+
+    let bounce = IsContained(ball, screen);
+    if(bounce > 0)
+    {
+        ball.ChangeSize(100 + ball.velocity.magnitude);
+        if(bounce % 2 == 0) 
+        { 
+            stage.y += ball.velocity.y * 2;
+            ball.velocity.y *= -1; 
+        }
+        else if(!reset)
+        { 
+            reset = true;
+            dir = ball.velocity.x;
+            if(dir > 0) { ++scoreA; }
+            else { ++scoreB; }
+            ball.velocity.Set(0,0);
+            score.color = "0xffffff";
+            score.text = scoreA + " | " + scoreB;
+            setTimeout(function() 
+            { 
+                reset = false;
+                score.color = "0x70ffde";
+                ball.position.Set(screen.x, screen.y);
+                if(dir > 0) { ball.velocity.x = 5; }
+                else { ball.velocity.x = -5; }
+                ball.velocity.y = (Math.random() - .5) * 5;
+                ball.velocity.magnitude = 10;
+            }, 1000);
+        }
+    }
+    
+    if(reset)
+    {
+        score.y = Lerp(score.y, 100, .1);
+        score.size = Lerp(score.size, 200, .25);
+    }
+    else
+    {
+        score.y = Lerp(score.y, 50, .1);
+        score.size = Lerp(score.size, 100, .25);
+    }
+}

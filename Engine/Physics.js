@@ -11,10 +11,10 @@ function IsTouching(a, b)
 
 function IsContained(a, b)
 {
-    if(!(a.x + a.w/2 < b.x + b.w/2)) { return 1; }
-    if(!(a.x - a.w/2 > b.x - b.w/2)) { return 3; }
-    if(!(a.y + a.h/2 < b.y + b.h/2)) { return 2; }
-    if(!(a.y - a.h/2 > b.y - b.h/2)) { return 4; }
+    if(!(a.x + a.w/2 < b.x + b.w/2) && a.velocity.x > 0) { return 1; }
+    if(!(a.x - a.w/2 > b.x - b.w/2) && a.velocity.x < 0) { return 3; }
+    if(!(a.y + a.h/2 < b.y + b.h/2) && a.velocity.y > 0) { return 2; }
+    if(!(a.y - a.h/2 > b.y - b.h/2) && a.velocity.y < 0) { return 4; }
     return 0;
 }
 

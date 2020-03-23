@@ -59,6 +59,12 @@ class Entity
     get tint() { return this._sprite.tint; }
     set tint(c) { this._sprite.tint = c; }
     
+    ChangeSize(w, h)
+    {
+        this.w = w;
+        if(h == undefined) { this.h = w; }
+        else { this.h = h; }
+    }
     SetAnchor(x, y)
     {
         this._sprite.anchor.set(x,y);
@@ -113,7 +119,6 @@ class Entity
             if(f == 0) { this._sprite.texture = this._originalTexture; }
             else { this._sprite.texture = this._anim._exposedTexture; }
         }
-        
         this.position.Add(this.velocity);
         this._sprite.x = this.position.x + this.offset.x;
         this._sprite.y = this.position.y + this.offset.y;
@@ -155,7 +160,7 @@ class Entity
 
 function UpdateAll()
 {
-    for(let i = entities.length - 1; i > -1; --i)
+    /*for(let i = entities.length - 1; i > -1; --i)
     {
         if(entities[i].tag == -1)
         {
@@ -165,6 +170,12 @@ function UpdateAll()
         {
             entities[i].Update();           
         }
+    }*/
+    cleanup = []
+    for(let i = 0; i < entities.length; i++)
+    {
+        if(entities[i].tag == -1) { cleanup.push(i); }
+        else { entities[i].Update(); }
     }
 }
 

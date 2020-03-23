@@ -97,3 +97,8 @@ function CreateTexture(image)
 {
     return PIXI.Texture.from("images/" + image + ".png");
 }
+
+function GetStage()
+{
+    return app.stage;
+}
